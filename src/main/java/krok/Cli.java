@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -26,9 +25,10 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 public class Cli {
+    private static final String FOP_CONF_XML = "fop.conf.xml";
     private final CliParameters params;
 
-    public Cli(CliParameters params) {
+    private Cli(CliParameters params) {
         this.params = params;
     }
 
@@ -42,23 +42,12 @@ public class Cli {
     }
 
     private void run() {
-        KrokData krokData = new KrokGenerator(params.pages, getKrokNumber(), params.seed).generate();
+        KrokData krokData = new KrokGenerator(params.pages, params.number, params.seed)
+                .generate();
 
         String xml = processTemplate(krokData);
 
         makePdf(xml);
-    }
-
-    private int getKrokNumber() {
-        if (params.number > 0) {
-            return params.number;
-        } else {
-            LocalDateTime now = LocalDateTime.now();
-            int shift = now.getMonthValue() > 10 || now.getMonthValue() < 6
-                    ? 1
-                    : 2;
-            return 2 * (now.getYear() - 1996) + shift;
-        }
     }
 
     private TemplateEngine createTemplateEngine() {
@@ -72,27 +61,27 @@ public class Cli {
     }
 
     private String processTemplate(KrokData krok) {
-        StringWriter stringWriter = new StringWriter();
-
         Context context = new Context();
         context.setVariable("krok", krok);
         context.setVariable("params", params);
         context.setVariable("LETTERS", KrokUtil.LETTERS);
         context.setVariable("NUMS", KrokUtil.NUMS);
 
+        StringWriter stringWriter = new StringWriter();
         createTemplateEngine().process("template", context, stringWriter);
         return stringWriter.toString();
     }
 
-    private static void makePdf(String xml) {
-        File conf = new File(KrokGenerator.class.getClassLoader().getResource("fop.conf.xml").getFile());
+    private void makePdf(String xml) {
+        File conf = new File(KrokGenerator.class.getClassLoader().getResource(FOP_CONF_XML).getFile());
 
         try {
             FopFactory fopFactory = FopFactory.newInstance(conf);
 
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("/Users/krok/ret.pdf")));
-
-            try {
+            try (
+                    OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(params.outputFile)))
+            )
+            {
                 Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
                 TransformerFactory factory = TransformerFactory.newInstance();
@@ -104,8 +93,6 @@ public class Cli {
                 Result res = new SAXResult(fop.getDefaultHandler());
 
                 transformer.transform(src, res);
-            } finally {
-                out.close();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

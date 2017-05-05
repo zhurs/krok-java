@@ -6,13 +6,7 @@ import com.beust.jcommander.Parameter;
 
 public class CliParameters {
     @Parameter(names = "-O", description = "Output file")
-    public String outputFile;
-
-    @Parameter(names = {"--debug", "-d"}, description = "Debug mode")
-    public boolean debug = false;
-
-    @Parameter(names = "-c", description = "Optional FOP config file")
-    public String fopConfig;
+    public String outputFile = "krok-codepages.pdf";
 
     @Parameter(names = "-n", description = "Krok number")
     public int number = 0;

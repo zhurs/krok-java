@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions">
+    <fo:layout-master-set>
+        <fo:simple-page-master margin="10mm 10mm 10mm 10mm" master-name="PageMaster" page-height="297mm" page-width="210mm">
+            <fo:region-body margin="0mm 0mm 0mm 0mm"/>
+        </fo:simple-page-master>
+    </fo:layout-master-set>
+    <!-- chain -->
+    <fo:page-sequence master-reference="PageMaster" force-page-count="no-force">
+        <fo:flow flow-name="xsl-region-body" font-size="12pt" font-family="Verdana">
+            <fo:block space-after="5mm" th:text="${'Крок ' + krok.number + ' (' + krok.season + ' ' + krok.year + ') (SEED: ' + krok.seed + ')'}"></fo:block>
+            <fo:table>
+
+                <fo:table-column th:each="page : ${krok.pages}"/>
+
+                <fo:table-body>
+                    <fo:table-row font-weight="bold" background-color="#dddddd">
+
+                        <fo:table-cell th:each="page,iterStat : ${krok.pages}" text-align="center" padding="0.3mm"><fo:block th:text="${iterStat.index}"></fo:block></fo:table-cell>
+                        
+                    </fo:table-row>
+
+                    <fo:table-row th:each="chainItem,iterStat : ${krok.chain}">
+                        <fo:table-cell th:each="code : ${chainItem}" text-align="center" th:background-color="${iterStat.odd}? '#ffffff' : '#eeeeee'" padding="0.3mm"><fo:block font-weight="bold" th:text="${code}"></fo:block></fo:table-cell>
+                    </fo:table-row>
+
+
+                </fo:table-body>
+            </fo:table>
+
+        </fo:flow>
+    </fo:page-sequence>
+
+    <fo:page-sequence th:each="page,iterStat : ${krok.pages}" master-reference="PageMaster" force-page-count="no-force">
+        <fo:flow flow-name="xsl-region-body" font-size="14pt" font-family="Verdana">
+
+            <fo:block-container absolute-position="absolute" top="0mm" left="00mm" width="130mm" height="28mm">
+                <fo:block><fo:external-graphic src="url('logo_big.gif')" width="130mm" height="28mm" content-width="130mm" content-height="28mm"/></fo:block>
+            </fo:block-container>
+
+            <fo:block-container vertical-align="middle" font-size="15mm" absolute-position="absolute" top="5mm" left="130mm" width="20mm" height="28mm">
+                <fo:block th:text="${krok.number}"></fo:block>
+            </fo:block-container>
+
+            <fo:block-container vertical-align="middle" font-size="7mm" absolute-position="absolute" top="9mm" left="150mm" width="60mm" height="28mm">
+                <fo:block th:text="${krok.season + ' ' + krok.year}"></fo:block>
+            </fo:block-container>
+
+            <fo:block-container text-align="center" font-size="25mm" absolute-position="absolute" top="25mm" left="00mm" width="200mm" height="28mm">
+                <fo:block th:text="${'КП-' + iterStat.index}"></fo:block>
+            </fo:block-container>
+
+            <fo:block-container absolute-position="absolute" top="50mm" left="00mm" width="190mm" height="105mm" border-style="solid" border-color="#000000">
+                <fo:block></fo:block>
+            </fo:block-container>
+
+            <fo:block-container text-align="center" font-size="8mm" absolute-position="absolute" top="157mm" left="0mm" width="140mm" height="8mm">
+                <fo:block th:text="${'КОДЫ ' + iterStat.index + '-го КП:'}"></fo:block>
+            </fo:block-container>
+
+            <fo:block-container absolute-position="absolute" top="167mm" left="00mm" width="140mm" height="100mm">
+                <fo:block font-size="8mm">
+
+                    <fo:table>
+
+                        <fo:table-column />
+
+                        <fo:table-column th:each="num : ${krok.NUMS}" />
+
+                        <fo:table-body>
+                            <fo:table-row font-weight="bold" background-color="#eeeeee">
+
+                                <fo:table-cell text-align="center" border-style="solid" padding="1mm"><fo:block> </fo:block></fo:table-cell>
+
+                                <fo:table-cell th:each="num : ${krok.NUMS}" text-align="center" border-style="solid" padding="1mm"><fo:block th:text="${num}"/></fo:table-cell>
+
+                            </fo:table-row>
+
+                            <fo:table-row th:each="letter,letterIterStat : ${krok.LETTERS}">
+                                <fo:table-cell text-align="center" background-color="#eeeeee" border-style="solid" padding="1mm"><fo:block font-weight="bold" th:text="${letter}"/></fo:table-cell>
+
+                                <fo:table-cell th:each="num : ${krok.NUMS}" text-align="center" border-style="solid" padding="1mm"><fo:block th:text="${krok.getCode(iterStat.index, letter, num)}"/></fo:table-cell>
+
+                            </fo:table-row>
+
+                        </fo:table-body>
+                    </fo:table>
+
+                </fo:block>
+            </fo:block-container>
+
+            <fo:block-container font-size="4mm" absolute-position="absolute" top="157mm" left="145mm" width="40mm" height="100mm">
+                <fo:block font-weight="bold" space-after="3mm">
+                    Для правильного заполнения маршрутного листа:
+                </fo:block>
+                <fo:block space-after="3mm">
+
+                    1. Найдите в таблице слева графу на пересечении строки и столбца, соответствующих коду, полученному на старте.
+
+                </fo:block>
+                <fo:block>
+                    2. Выпишите код из этой графы в графу "КП-0" в таблице в вашем маршрутном листе.
+                </fo:block>
+            </fo:block-container>
+
+
+        </fo:flow>
+    </fo:page-sequence>
+
+</fo:root>

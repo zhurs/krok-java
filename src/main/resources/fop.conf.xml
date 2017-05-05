@@ -1,0 +1,13 @@
+<fop version="1.0">
+<renderers>
+   <renderer mime="application/pdf">
+      <fonts>
+         <directory recursive="true">/usr/share/fonts/truetype/msttcorefonts/</directory>
+<!--         <directory recursive="true">/Library/Fonts/</directory>
+         <directory recursive="true">C:\WINDOWS\fonts</directory>   -->
+
+         <auto-detect/>
+      </fonts>
+   </renderer>
+</renderers>
+</fop>

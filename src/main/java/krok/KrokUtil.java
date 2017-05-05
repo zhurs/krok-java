@@ -1,10 +1,11 @@
-package zhur;
+package krok;
 
 import java.time.LocalDateTime;
 
 public class KrokUtil {
-
     private static final int FIRST_KROK_YEAR = 1996;
+    public static final char[] LETTERS = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+    public static final int[] NUMS = {1, 2, 3, 4, 5, 6, 7, 8};
 
     public static int getDefaultKrokNumber() {
         LocalDateTime now = LocalDateTime.now();

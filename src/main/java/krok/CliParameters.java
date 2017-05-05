@@ -1,4 +1,4 @@
-package zhur;
+package krok;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -26,5 +26,4 @@ public class CliParameters {
     public CliParameters() {
         this.number = KrokUtil.getDefaultKrokNumber();
     }
-
 }

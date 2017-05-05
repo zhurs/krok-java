@@ -1,4 +1,4 @@
-package zhur;
+package krok;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -42,7 +42,7 @@ public class Cli {
     }
 
     private void run() {
-        KrokData krokData = new KrokData(getKrokNumber(), params.seed);
+        KrokData krokData = new KrokGenerator(params.pages, getKrokNumber(), params.seed).generate();
 
         String xml = processTemplate(krokData);
 
@@ -73,19 +73,24 @@ public class Cli {
 
     private String processTemplate(KrokData krok) {
         StringWriter stringWriter = new StringWriter();
+
         Context context = new Context();
         context.setVariable("krok", krok);
+        context.setVariable("params", params);
+        context.setVariable("LETTERS", KrokUtil.LETTERS);
+        context.setVariable("NUMS", KrokUtil.NUMS);
+
         createTemplateEngine().process("template", context, stringWriter);
         return stringWriter.toString();
     }
 
     private static void makePdf(String xml) {
-        File conf = new File(Generator.class.getClassLoader().getResource("fop.conf.xml").getFile());
+        File conf = new File(KrokGenerator.class.getClassLoader().getResource("fop.conf.xml").getFile());
 
         try {
             FopFactory fopFactory = FopFactory.newInstance(conf);
 
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("/Users/zhur/ret.pdf")));
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("/Users/krok/ret.pdf")));
 
             try {
                 Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
@@ -93,7 +98,7 @@ public class Cli {
                 TransformerFactory factory = TransformerFactory.newInstance();
                 Transformer transformer = factory.newTransformer(); // identity transformer
 
-                //File fo = new File(Generator.class.getClassLoader().getResource("template.xml").getFile());
+                //File fo = new File(KrokGenerator.class.getClassLoader().getResource("template.xml").getFile());
                 Source src = new StreamSource(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
 
                 Result res = new SAXResult(fop.getDefaultHandler());

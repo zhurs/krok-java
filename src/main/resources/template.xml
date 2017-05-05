@@ -8,7 +8,7 @@
     <!-- chain -->
     <fo:page-sequence master-reference="PageMaster" force-page-count="no-force">
         <fo:flow flow-name="xsl-region-body" font-size="12pt" font-family="Verdana">
-            <fo:block space-after="5mm" th:text="${'Крок ' + krok.number + ' (' + krok.season + ' ' + krok.year + ') (SEED: ' + krok.seed + ')'}"></fo:block>
+            <fo:block space-after="5mm" th:text="${'Крок ' + params.number + ' (' + krok.season + ' ' + krok.year + ') (SEED: ' + params.seed + ')'}"></fo:block>
             <fo:table>
 
                 <fo:table-column th:each="page : ${krok.pages}"/>
@@ -39,7 +39,7 @@
             </fo:block-container>
 
             <fo:block-container vertical-align="middle" font-size="15mm" absolute-position="absolute" top="5mm" left="130mm" width="20mm" height="28mm">
-                <fo:block th:text="${krok.number}"></fo:block>
+                <fo:block th:text="${params.number}"></fo:block>
             </fo:block-container>
 
             <fo:block-container vertical-align="middle" font-size="7mm" absolute-position="absolute" top="9mm" left="150mm" width="60mm" height="28mm">
@@ -65,21 +65,21 @@
 
                         <fo:table-column />
 
-                        <fo:table-column th:each="num : ${krok.NUMS}" />
+                        <fo:table-column th:each="num : ${NUMS}" />
 
                         <fo:table-body>
                             <fo:table-row font-weight="bold" background-color="#eeeeee">
 
                                 <fo:table-cell text-align="center" border-style="solid" padding="1mm"><fo:block> </fo:block></fo:table-cell>
 
-                                <fo:table-cell th:each="num : ${krok.NUMS}" text-align="center" border-style="solid" padding="1mm"><fo:block th:text="${num}"/></fo:table-cell>
+                                <fo:table-cell th:each="num : ${NUMS}" text-align="center" border-style="solid" padding="1mm"><fo:block th:text="${num}"/></fo:table-cell>
 
                             </fo:table-row>
 
-                            <fo:table-row th:each="letter,letterIterStat : ${krok.LETTERS}">
+                            <fo:table-row th:each="letter,letterIterStat : ${LETTERS}">
                                 <fo:table-cell text-align="center" background-color="#eeeeee" border-style="solid" padding="1mm"><fo:block font-weight="bold" th:text="${letter}"/></fo:table-cell>
 
-                                <fo:table-cell th:each="num : ${krok.NUMS}" text-align="center" border-style="solid" padding="1mm"><fo:block th:text="${krok.getCode(iterStat.index, letter, num)}"/></fo:table-cell>
+                                <fo:table-cell th:each="num : ${NUMS}" text-align="center" border-style="solid" padding="1mm"><fo:block th:text="${krok.getCode(iterStat.index, letter, num)}"/></fo:table-cell>
 
                             </fo:table-row>
 

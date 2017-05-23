@@ -26,14 +26,12 @@ public class KrokGenerator {
     }
 
     public KrokData generate() {
-        KrokData.KrokDataBuilder krok = KrokData.builder()
-                .season(KrokUtil.getSeason(number))
-                .year(KrokUtil.getYear(this.number));
+        KrokData krok = new KrokData(KrokUtil.getSeason(number), KrokUtil.getYear(this.number));
         generateCodePages(krok);
-        return krok.build();
+        return krok;
     }
 
-    private void generateCodePages(KrokData.KrokDataBuilder krok) {
+    private void generateCodePages(KrokData krok) {
         List<Map<String, String>> pages = new ArrayList<>(pagesNum + 1);
         List<String> orderedCodes =
                 IntStreamEx.range(LETTERS.length * NUMS.length)
@@ -56,8 +54,8 @@ public class KrokGenerator {
             chain.add(chainItem);
         }
 
-        krok.pages(pages)
-                .chain(chain);
+        krok.withPages(pages)
+                .withChain(chain);
     }
 
     private String intToCode(int n) {

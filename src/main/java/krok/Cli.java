@@ -19,12 +19,16 @@ import com.beust.jcommander.JCommander;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 public class Cli {
+    private static final Logger logger = LoggerFactory.getLogger(Cli.class);
+
     private static final String FOP_CONF_XML = "fop.conf.xml";
     private final CliParameters params;
 
@@ -48,6 +52,8 @@ public class Cli {
         String xml = processTemplate(krokData);
 
         makePdf(xml);
+
+        logger.info("File {} created", params.outputFile);
     }
 
     private TemplateEngine createTemplateEngine() {
